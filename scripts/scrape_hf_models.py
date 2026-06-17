@@ -374,6 +374,37 @@ def fetch_model_info(repo_id: str) -> dict | None:
         return None
 
 
+def extract_license(info: dict | None) -> str | None:
+    """Extract normalized license metadata from HuggingFace model info."""
+    if not info:
+        return None
+
+    card_data = info.get("cardData") or {}
+    license_value = card_data.get("license")
+    license_name = card_data.get("license_name")
+
+    if isinstance(license_name, str) and license_name.strip():
+        license_name = license_name.strip().lower()
+    else:
+        license_name = None
+
+    if isinstance(license_value, str) and license_value.strip():
+        license_value = license_value.strip().lower()
+        return license_name if license_value == "other" and license_name else license_value
+    if isinstance(license_value, list):
+        licenses = [str(item).strip().lower() for item in license_value if str(item).strip()]
+        if licenses:
+            return ",".join(licenses)
+
+    for tag in info.get("tags", []):
+        if isinstance(tag, str) and tag.startswith("license:"):
+            license_tag = tag.removeprefix("license:").strip().lower()
+            if license_tag:
+                return license_name if license_tag == "other" and license_name else license_tag
+
+    return None
+
+
 def format_param_count(total_params: int) -> str:
     """Convert raw parameter count into human-readable string."""
     if total_params >= 1_000_000_000:
@@ -867,6 +898,8 @@ def scrape_model(repo_id: str) -> dict | None:
     # absent fields cause the Rust side to fall back to the linear approx.
     arch_meta = extract_arch_metadata(full_config)
 
+    license_name = extract_license(info)
+
     result = {
         "name": repo_id,
         "provider": extract_provider(repo_id),
@@ -887,6 +920,9 @@ def scrape_model(repo_id: str) -> dict | None:
         "release_date": (info.get("createdAt") or "")[:10] or None,
         **arch_meta,
     }
+
+    if license_name:
+        result["license"] = license_name
 
     # Add MoE fields if detected
     if moe_info["is_moe"]:
@@ -1422,6 +1458,9 @@ def _build_discovered_model(listing: dict) -> dict | None:
     # Architecture metadata for the precise KV cache formula.
     arch_meta = extract_arch_metadata(full_config)
 
+    license_info = fetch_model_info(repo_id) or listing
+    license_name = extract_license(license_info)
+
     model = {
         "name": repo_id,
         "provider": extract_provider(repo_id),
@@ -1443,6 +1482,9 @@ def _build_discovered_model(listing: dict) -> dict | None:
         **arch_meta,
         "_discovered": True,
     }
+
+    if license_name:
+        model["license"] = license_name
 
     if moe_info["is_moe"]:
         model["is_moe"] = True
@@ -2636,6 +2678,11 @@ def main():
                 for old_model in existing:
                     name = old_model.get("name", "")
                     if name in fresh_by_name:
+                        fresh_model = fresh_by_name[name]
+                        if old_model.get("license") and not fresh_model.get("license"):
+                            fresh_model["license"] = old_model["license"]
+                        if old_model.get("gguf_sources") and not fresh_model.get("gguf_sources"):
+                            fresh_model["gguf_sources"] = old_model["gguf_sources"]
                         updated_count += 1
                     elif name:
                         # Historical model not in current scrape — keep it
