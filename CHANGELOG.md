@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.9.32](https://github.com/AlexsJones/llmfit/compare/v0.9.31...v0.9.32) (2026-06-23)
+
+
+### Features
+
+* add NCAI VAETKI models to curated model database ([b3c04a8](https://github.com/AlexsJones/llmfit/commit/b3c04a82055875b27a8808131df8f41e544ca759))
+* **analysis:** add InstalledIndex and build_model_fits to consolidate provider detection ([33dce8b](https://github.com/AlexsJones/llmfit/commit/33dce8bbb9f8a527c48fec07152fa2c3a0983784))
+* **data:** add Whisper/ASR model entries + audio support roadmap ([27bae48](https://github.com/AlexsJones/llmfit/commit/27bae4878f798c7069f936de6fa9ed5b1dcc3312))
+* **python:** add riscv64 wheel build ([e12bb85](https://github.com/AlexsJones/llmfit/commit/e12bb85abdd752e632930c3086a4afc935e9a4a6))
+* **python:** add riscv64 wheel build ([cb377f4](https://github.com/AlexsJones/llmfit/commit/cb377f45595b745d7bf0963ab1c86b807c210b01))
+
+
+### Bug Fixes
+
+* bundle WebView2 bootstrapper for Windows desktop app ([c72103b](https://github.com/AlexsJones/llmfit/commit/c72103b784134b8cc66725d4e8e9c36b0d01e64d))
+* **fit:** CPU-only models that fit with headroom reach Good, not Marginal ([aad4c37](https://github.com/AlexsJones/llmfit/commit/aad4c373285e328bcbab72577ee49d62cca1515d))
+* **fit:** CPU-only models that fit with headroom reach Good, not Marginal ([0ced1b7](https://github.com/AlexsJones/llmfit/commit/0ced1b775cb39f783cabf4411d25e1e1aa188015))
+* **hardware:** detect all GPUs across sysfs, ROCm tabular, and fit pool ([0989ca2](https://github.com/AlexsJones/llmfit/commit/0989ca2dc443f782cf34cec709e989c23f234178))
+* **hardware:** ROCm tabular multi-GPU parsing + summed fit VRAM pool ([4e27617](https://github.com/AlexsJones/llmfit/commit/4e27617baaeaf1902131f59c71763de360ef6837))
+* **scoring:** MoE active-param quality, recency bonus, smooth fit curve ([c499c00](https://github.com/AlexsJones/llmfit/commit/c499c000948cb620564d9c8433df5b8b5d36880d))
+* **scoring:** MoE active-param quality, recency bonus, smooth fit curve ([2db3e55](https://github.com/AlexsJones/llmfit/commit/2db3e552ad637437589e692bf91bc9ca69350925))
+* **scoring:** treat headroom as a perfect fit (one-sided fit curve) ([235be33](https://github.com/AlexsJones/llmfit/commit/235be33b1d8ada30693f72b48b48d50bd48df5a9))
+* **tui:** make provider filter input cursor-aware and ASCII-only ([933644e](https://github.com/AlexsJones/llmfit/commit/933644e4d1a80969cb7bfc1c5386423291a50132))
+
+
+### Performance Improvements
+
+* **analysis:** parallelize provider detection in detect_all with thread::scope ([d0660bc](https://github.com/AlexsJones/llmfit/commit/d0660bc72e601a7707caabb2f4e042a0701c491e))
+
 ## [0.9.31](https://github.com/AlexsJones/llmfit/compare/v0.9.30...v0.9.31) (2026-06-09)
 
 
